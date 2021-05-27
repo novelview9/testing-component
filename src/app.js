@@ -1,53 +1,85 @@
-import React, {Suspense} from 'react';
-import {createGlobalStyle} from 'styled-components';
+import toStyle from "css-to-style";
+import _, { last } from "lodash";
+import React, { useEffect, useRef, useState } from "react";
+import styled, { css } from "styled-components";
+import { createGlobalStyle } from "styled-components";
+import { images } from "min-document";
 
-// Import assets
-import 'modern-normalize/modern-normalize.css';
-import woff2 from '../public/fonts/open-sans-v16-latin-regular.woff2';
-import woff from '../public/fonts/open-sans-v16-latin-regular.woff';
+import data from "../data";
 
-// Import Components
-import Container from './components/container';
-import Header from './components/header';
-import Image from './components/image';
-const Counter = React.lazy(() => import('./components/counter'));
+const GlobalStyle = createGlobalStyle``;
 
-// Global Style
-const GlobalStyle = createGlobalStyle`
-  @font-face {
-    font-family: 'Open Sans';
-    font-style: normal;
-    font-weight: 400;
-    font-display: fallback;
-    src: local('Open Sans Regular'), local('OpenSans-Regular'),
-        url('${woff2}') format('woff2'),
-        url('${woff}') format('woff');
-  }
-
-  body {
-    font-family: Open Sans, Segoe UI, Tahoma, sans-serif !important;
-    background: #131415;
-    color: #fff;
-    padding: 1em;
-    line-height: 1.8em;
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeSpeed;
-    word-wrap: break-word
-  }
+const DrawingData = ({ data }) => {
+    console.log(data);
+    return (
+        <DrawingContainer>
+            {data.images.map(({ url, style, xy }) => (
+                <Img src={url} style={{ ...toStyle(style) }} left={xy[0]} top={xy[1]} />
+            ))}
+            {data.textContainers.map(({ label, style, xy }) => (
+                <Text style={{ ...toStyle(style) }} left={xy[0]} top={xy[1]}>
+                    {label}
+                </Text>
+            ))}
+        </DrawingContainer>
+    );
+};
+const DrawingContainer = styled.div`
+    width: inherit;
+    height: inherit;
+    display: flex;
+    flex-wrap: wrap;
 `;
-
 // Main page
 const App = () => {
-	return (
-		<Container>
-			<Header>Hello World <Image/></Header>
-			<p>Example site using Styled React Boilerplate!</p>
-			<Suspense fallback={<div>Loading...</div>}>
-				<Counter/>
-			</Suspense>
-			<GlobalStyle/>
-		</Container>
-	);
+    const ref = useRef();
+    const onClick = () => {
+        const video = ref.current;
+        const method = video.paused ? "play" : "pause";
+        video[method]();
+    };
+
+    const onTimeEvent = (event) => {
+        const currentSecond = event.timeStamp / 1000;
+        const nodeIndex = _.findLastIndex(data, (obj) => obj.defDuration < currentSecond);
+        console.log(currentSecond);
+        if (_.isUndefined(nodeIndex)) {
+            return;
+        }
+        console.log(data[nodeIndex]);
+        setNodeData(data[nodeIndex]);
+    };
+    const [nodeData, setNodeData] = useState();
+    return (
+        <Container>
+            <ContentFrame>
+                {nodeData && <DrawingData data={nodeData} />}
+                <Video src="./public/video.mp4" onTimeUpdate={onTimeEvent} ref={ref} />
+            </ContentFrame>
+            <Button onClick={onClick}>play/pause</Button>
+        </Container>
+    );
 };
 
+const ContentFrame = styled.div`
+    position: relative;
+    background-color: gray;
+    width: 1200px;
+    height: 600px;
+`;
+const Button = styled.button``;
+const Video = styled.video`
+    position: absolute;
+    right: -300px;
+    bottom: 0;
+`;
+const Container = styled.div`
+    min-width: 100vw;
+    min-height: 100vh;
+`;
+const Img = styled.img`
+    object-fit: contain;
+`;
+
+const Text = styled.p``;
 export default App;

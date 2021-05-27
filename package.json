@@ -52,9 +52,13 @@
     },
     "dependencies": {
         "core-js": "^3.6.5",
+        "css-to-style": "^1.4.0",
+        "konva": "^8.0.1",
+        "lodash": "^4.17.21",
         "modern-normalize": "^1.0.0",
         "react": "16.13.1",
         "react-dom": "16.13.1",
+        "react-konva": "^17.0.2-4",
         "styled-components": "^5.2.0"
     },
     "xo": {

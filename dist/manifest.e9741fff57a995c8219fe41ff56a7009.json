@@ -1,0 +1,47 @@
+{
+  "icons": [
+    {
+      "src": "icon_512x512.17445a995aafa024872cfa30cebb1699.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "icon_192x192.9317398e5e0fab9cc882c2efb8fdb843.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon_144x144.57f41a9ffa45577ac1b24c2ca12c117d.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "icon_96x96.0b0e4687104bd4e9a613a88209398ef1.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "icon_72x72.e038999565478e512d0edc0d5187df47.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "icon_48x48.eb26bc385e54af12095e25ffbe95321a.png",
+      "sizes": "48x48",
+      "type": "image/png"
+    },
+    {
+      "src": "icon_36x36.86c1b52e1791ea68e3165433e9553667.png",
+      "sizes": "36x36",
+      "type": "image/png"
+    }
+  ],
+  "name": "Hello World",
+  "short_name": "Hello World",
+  "orientation": "portrait",
+  "display": "standalone",
+  "start_url": ".",
+  "description": "Styled React Boilerplate Demo",
+  "theme_color": "#131415",
+  "background_color": "#131415"
+}
