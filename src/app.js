@@ -10,7 +10,6 @@ import data from "../data";
 const GlobalStyle = createGlobalStyle``;
 
 const DrawingData = ({ data }) => {
-    console.log(data);
     return (
         <DrawingContainer>
             {data.images.map(({ url, style, xy }) => (
@@ -30,32 +29,76 @@ const DrawingContainer = styled.div`
     display: flex;
     flex-wrap: wrap;
 `;
+
+const Control = ({ percent, onClick }) => {
+    return (
+        <ControlContainer>
+            <ProgressBarLine onClick={onClick}>
+                <ProgressBarFilled percent={percent} />
+            </ProgressBarLine>
+        </ControlContainer>
+    );
+};
+
+const ControlContainer = styled.div`
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 20px;
+    display: flex;
+`;
+const ProgressBarLine = styled.div`
+    display: flex;
+    width: inherit;
+    background-color: #c9d5ff;
+    cursor: pointer;
+`;
+const ProgressBarFilled = styled.div`
+    color: white;
+    flex-basis: ${(props) => props.percent}%;
+    background-color: #4568e2;
+`;
+
 // Main page
 const App = () => {
     const ref = useRef();
+    const widthRef = useRef();
     const onClick = () => {
         const video = ref.current;
         const method = video.paused ? "play" : "pause";
         video[method]();
     };
-
-    const onTimeEvent = (event) => {
-        const currentSecond = event.timeStamp / 1000;
-        const nodeIndex = _.findLastIndex(data, (obj) => obj.defDuration < currentSecond);
-        console.log(currentSecond);
+    const onResetData = (currentTime) => {
+        const video = ref.current;
+        const nodeIndex = _.findLastIndex(data, (obj) => obj.defDuration < currentTime);
+        const percentPoint = (currentTime / video.duration) * 100;
+        setPercent(percentPoint);
         if (_.isUndefined(nodeIndex)) {
             return;
         }
-        console.log(data[nodeIndex]);
         setNodeData(data[nodeIndex]);
     };
+
+    const onTimeEvent = (event) => {
+        const video = ref.current;
+        onResetData(video.currentTime);
+    };
     const [nodeData, setNodeData] = useState();
+    const [percent, setPercent] = useState(0);
+
+    const barClick = (e) => {
+        const video = ref.current;
+        const percentPoint = e.nativeEvent.offsetX / widthRef.current.offsetWidth;
+        const currentTime = percentPoint * video.duration;
+        video.currentTime = currentTime;
+        onResetData(currentTime);
+    };
+
     return (
-        <Container>
-            <ContentFrame>
-                {nodeData && <DrawingData data={nodeData} />}
-                <Video src="./public/video.mp4" onTimeUpdate={onTimeEvent} ref={ref} />
-            </ContentFrame>
+        <Container ref={widthRef}>
+            <ContentFrame>{nodeData && <DrawingData data={nodeData} />}</ContentFrame>
+            <Control percent={percent} onClick={barClick} />
+            <Video src="./public/video.mp4" onTimeUpdate={onTimeEvent} ref={ref} />
             <Button onClick={onClick}>play/pause</Button>
         </Container>
     );
@@ -63,19 +106,25 @@ const App = () => {
 
 const ContentFrame = styled.div`
     position: relative;
+    display: flex;
     background-color: gray;
-    width: 1200px;
     height: 600px;
+    max-width: 80%;
 `;
-const Button = styled.button``;
+const Button = styled.button`
+    position: absolute;
+    bottom: -20px;
+`;
 const Video = styled.video`
     position: absolute;
-    right: -300px;
-    bottom: 0;
+    right: 0;
+    width: 30%;
+    bottom: 50px;
 `;
 const Container = styled.div`
-    min-width: 100vw;
-    min-height: 100vh;
+    position: relative;
+    border: 1px solid black;
+    min-width: 500px;
 `;
 const Img = styled.img`
     object-fit: contain;
