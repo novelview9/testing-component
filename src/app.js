@@ -144,6 +144,7 @@ const Wrapper = styled.div`
             padding-right: 60px;
             background-image: url("./public/bg_video5_5_1_shot11.jpg");
             background-size: contain;
+            background-repeat: no-repeat;
         `};
 `;
 const ContentFrame = styled.div`
