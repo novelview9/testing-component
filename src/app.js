@@ -7,7 +7,13 @@ import { images } from "min-document";
 
 import data from "../data";
 
-const GlobalStyle = createGlobalStyle``;
+const GlobalStyle = createGlobalStyle`
+body{
+    margin:0;
+    padding:0;
+
+}
+`;
 
 const DrawingData = ({ data }) => {
     return (
@@ -24,8 +30,6 @@ const DrawingData = ({ data }) => {
     );
 };
 const DrawingContainer = styled.div`
-    width: inherit;
-    height: inherit;
     display: flex;
     flex-wrap: wrap;
 `;
@@ -42,7 +46,7 @@ const Control = ({ percent, onClick }) => {
 
 const ControlContainer = styled.div`
     position: absolute;
-    bottom: -20px;
+    bottom: 20px;
     width: 100%;
     height: 20px;
     display: flex;
@@ -106,20 +110,23 @@ const App = () => {
     };
 
     return (
-        <Container ref={widthRef}>
-            <Wrapper bg={isActiveBG}>
-                <InnerFrame>
-                    <ContentFrame isFull={!isActiveVideo}>{nodeData && <DrawingData data={nodeData} />}</ContentFrame>
-                    <Video src="./public/video.mp4" onTimeUpdate={onTimeEvent} ref={ref} active={isActiveVideo} />
-                </InnerFrame>
-            </Wrapper>
-            <Control percent={percent} onClick={barClick} />
-            <Buttons>
-                <Button onClick={onClick}>play/pause</Button>
-                <Button onClick={toggleBG}>background on/off</Button>
-                <Button onClick={toggleVideo}>video on/off</Button>
-            </Buttons>
-        </Container>
+        <>
+            <GlobalStyle />
+            <Container ref={widthRef}>
+                <Wrapper bg={isActiveBG}>
+                    <InnerFrame>
+                        <ContentFrame isFull={!isActiveVideo}>{nodeData && <DrawingData data={nodeData} />}</ContentFrame>
+                        <Video src="./public/video.mp4" onTimeUpdate={onTimeEvent} ref={ref} active={isActiveVideo} />
+                    </InnerFrame>
+                </Wrapper>
+                <Control percent={percent} onClick={barClick} />
+                <Buttons>
+                    <Button onClick={onClick}>play/pause</Button>
+                    <Button onClick={toggleBG}>background on/off</Button>
+                    <Button onClick={toggleVideo}>video on/off</Button>
+                </Buttons>
+            </Container>
+        </>
     );
 };
 
@@ -129,19 +136,19 @@ const InnerFrame = styled.div`
 `;
 const Buttons = styled.div`
     position: absolute;
-    bottom: -45px;
+    bottom: 0;
     display: flex;
 `;
 const Wrapper = styled.div`
-    height: 700px;
     box-sizing: border-box;
+    height: 100%;
     ${(props) =>
         props.bg &&
         css`
-            padding-top: 80px;
-            padding-bottom: 50px;
-            padding-left: 60px;
-            padding-right: 60px;
+            padding-top: 5%;
+            padding-bottom: 3%;
+            padding-left: 2%;
+            padding-right: 2%;
             background-image: url("./public/bg_video5_5_1_shot11.jpg");
             background-size: contain;
             background-repeat: no-repeat;
@@ -164,7 +171,7 @@ const Video = styled.video`
     position: absolute;
     right: 0;
     width: 30%;
-    bottom: 50px;
+    bottom: 0;
     opacity: 0;
     ${(props) =>
         props.active &&
@@ -173,9 +180,13 @@ const Video = styled.video`
         `}
 `;
 const Container = styled.div`
+    height: 768px;
+    max-height: 100vh;
     position: relative;
     border: 1px solid black;
     min-width: 500px;
+    box-sizing: border-box;
+    padding-bottom: 40px;
 `;
 const Img = styled.img`
     object-fit: contain;
