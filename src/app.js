@@ -42,7 +42,7 @@ const Control = ({ percent, onClick }) => {
 
 const ControlContainer = styled.div`
     position: absolute;
-    bottom: 0;
+    bottom: -20px;
     width: 100%;
     height: 20px;
     display: flex;
@@ -93,33 +93,83 @@ const App = () => {
         video.currentTime = currentTime;
         onResetData(currentTime);
     };
+    const [isActiveBG, setIsActiveBG] = useState(false);
+
+    const toggleBG = () => {
+        setIsActiveBG(!isActiveBG);
+    };
+
+    const [isActiveVideo, setIsActiveVideo] = useState(true);
+
+    const toggleVideo = () => {
+        setIsActiveVideo(!isActiveVideo);
+    };
 
     return (
         <Container ref={widthRef}>
-            <ContentFrame>{nodeData && <DrawingData data={nodeData} />}</ContentFrame>
+            <Wrapper bg={isActiveBG}>
+                <InnerFrame>
+                    <ContentFrame isFull={!isActiveVideo}>{nodeData && <DrawingData data={nodeData} />}</ContentFrame>
+                    <Video src="./public/video.mp4" onTimeUpdate={onTimeEvent} ref={ref} active={isActiveVideo} />
+                </InnerFrame>
+            </Wrapper>
             <Control percent={percent} onClick={barClick} />
-            <Video src="./public/video.mp4" onTimeUpdate={onTimeEvent} ref={ref} />
-            <Button onClick={onClick}>play/pause</Button>
+            <Buttons>
+                <Button onClick={onClick}>play/pause</Button>
+                <Button onClick={toggleBG}>background on/off</Button>
+                <Button onClick={toggleVideo}>video on/off</Button>
+            </Buttons>
         </Container>
     );
 };
 
+const InnerFrame = styled.div`
+    position: relative;
+    height: 100%;
+`;
+const Buttons = styled.div`
+    position: absolute;
+    bottom: -45px;
+    display: flex;
+`;
+const Wrapper = styled.div`
+    height: 700px;
+    box-sizing: border-box;
+    ${(props) =>
+        props.bg &&
+        css`
+            padding-top: 80px;
+            padding-bottom: 50px;
+            padding-left: 60px;
+            padding-right: 60px;
+            background-image: url("./public/bg_video5_5_1_shot11.jpg");
+            background-size: contain;
+        `};
+`;
 const ContentFrame = styled.div`
     position: relative;
     display: flex;
     background-color: gray;
-    height: 600px;
+    height: 100%;
     max-width: 80%;
+    ${(props) =>
+        props.isFull &&
+        css`
+            max-width: 100%;
+        `}
 `;
-const Button = styled.button`
-    position: absolute;
-    bottom: -20px;
-`;
+const Button = styled.button``;
 const Video = styled.video`
     position: absolute;
     right: 0;
     width: 30%;
     bottom: 50px;
+    opacity: 0;
+    ${(props) =>
+        props.active &&
+        css`
+            opacity: 1;
+        `}
 `;
 const Container = styled.div`
     position: relative;
